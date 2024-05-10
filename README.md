@@ -1,6 +1,7 @@
 # Drum head detection with YOLOv8 in ONNX runtime in yo browser
 
 **DEMO**: https://plasmoxy.github.io/drumhead/
+**ORIGINAL AUTHOR DEMO**: https://hyuto.github.io/yolov8-onnxruntime-web/
 
 With webcam!
 
