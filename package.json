@@ -1,6 +1,6 @@
 {
   "name": "yolov8-onnxruntime-web",
-  "homepage": "https://hyuto.github.io/yolov8-onnxruntime-web/",
+  "homepage": "/",
   "version": "0.1.0",
   "dependencies": {
     "@techstark/opencv-js": "4.5.5-release.2",
@@ -37,13 +37,6 @@
     "url": "https://github.com/Hyuto"
   },
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Hyuto/yolov8-onnxruntime-web.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Hyuto/yolov8-onnxruntime-web/issues"
-  },
   "devDependencies": {
     "@craco/craco": "^7.0.0",
     "copy-webpack-plugin": "^11.0.0",

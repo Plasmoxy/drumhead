@@ -1,6 +1,57 @@
-import cv from "@techstark/opencv-js";
-import { Tensor } from "onnxruntime-web";
-import { renderBoxes } from "./renderBox";
+import cv from "@techstark/opencv-js"
+import { Tensor } from "onnxruntime-web"
+import { renderBoxes } from "./renderBox"
+
+export async function startCam(videoId = "videoInput", resolution = "vga") {
+  const constraints = {
+    qvga: {
+      facingMode: "environment",
+      width: {
+        exact: 320,
+      },
+      height: {
+        exact: 240,
+      },
+    },
+    vga: {
+      facingMode: "environment",
+      width: {
+        exact: 640,
+      },
+      height: {
+        exact: 480,
+      },
+    },
+  }
+  let video = document.getElementById(videoId)
+  if (!video) {
+    video = document.createElement("video")
+  }
+  let videoConstraint = constraints[resolution]
+  if (!videoConstraint) {
+    videoConstraint = true
+  }
+
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video: videoConstraint,
+    audio: false,
+  })
+
+  video.srcObject = stream
+  video.play()
+  // self.video = video
+  // self.stream = stream
+  // self.onCameraStartedCallback = callback
+
+  video.addEventListener(
+    "canplay",
+    () => {
+      video.width = video.videoWidth
+      video.height = video.videoHeight
+    },
+    false
+  )
+}
 
 /**
  * Detect Image
@@ -21,10 +72,12 @@ export const detectImage = async (
   scoreThreshold,
   inputShape
 ) => {
-  const [modelWidth, modelHeight] = inputShape.slice(2);
-  const [input, xRatio, yRatio] = preprocessing(image, modelWidth, modelHeight);
+  const [modelWidth, modelHeight] = inputShape.slice(2)
+  const [input, xRatio, yRatio] = preprocessing(image, modelWidth, modelHeight)
 
-  const tensor = new Tensor("float32", input.data32F, inputShape); // to ort.Tensor
+  console.log(`X ratio: ${xRatio}, Y ratio: ${yRatio}`)
+
+  const tensor = new Tensor("float32", input.data32F, inputShape) // to ort.Tensor
   const config = new Tensor(
     "float32",
     new Float32Array([
@@ -32,58 +85,67 @@ export const detectImage = async (
       iouThreshold, // iou threshold
       scoreThreshold, // score threshold
     ])
-  ); // nms config tensor
-  const { output0 } = await session.net.run({ images: tensor }); // run session and get output layer
-  const { selected } = await session.nms.run({ detection: output0, config: config }); // perform nms and filter boxes
+  ) // nms config tensor
+  const { output0 } = await session.net.run({ images: tensor }) // run session and get output layer
+  const { selected } = await session.nms.run({
+    detection: output0,
+    config: config,
+  }) // perform nms and filter boxes
 
-  const boxes = [];
+  const boxes = []
 
   // looping through output
   for (let idx = 0; idx < selected.dims[1]; idx++) {
-    const data = selected.data.slice(idx * selected.dims[2], (idx + 1) * selected.dims[2]); // get rows
-    const box = data.slice(0, 4);
-    const scores = data.slice(4); // classes probability scores
-    const score = Math.max(...scores); // maximum probability scores
-    const label = scores.indexOf(score); // class id of maximum probability scores
+    const data = selected.data.slice(
+      idx * selected.dims[2],
+      (idx + 1) * selected.dims[2]
+    ) // get rows
+    const box = data.slice(0, 4)
+    const scores = data.slice(4) // classes probability scores
+    const score = Math.max(...scores) // maximum probability scores
+    const label = scores.indexOf(score) // class id of maximum probability scores
 
     const [x, y, w, h] = [
       (box[0] - 0.5 * box[2]) * xRatio, // upscale left
       (box[1] - 0.5 * box[3]) * yRatio, // upscale top
       box[2] * xRatio, // upscale width
       box[3] * yRatio, // upscale height
-    ]; // keep boxes in maxSize range
+    ] // keep boxes in maxSize range
 
     boxes.push({
       label: label,
       probability: score,
       bounding: [x, y, w, h], // upscale box
-    }); // update boxes to draw later
+    }) // update boxes to draw later
   }
 
-  renderBoxes(canvas, boxes); // Draw boxes
-  input.delete(); // delete unused Mat
-};
+  renderBoxes(canvas, boxes) // Draw boxes
+  input.delete() // delete unused Mat
+
+  return boxes
+}
 
 /**
  * Preprocessing image
- * @param {HTMLImageElement} source image source
+ * @param source image source
  * @param {Number} modelWidth model input width
  * @param {Number} modelHeight model input height
  * @return preprocessed image and configs
  */
 const preprocessing = (source, modelWidth, modelHeight) => {
-  const mat = cv.imread(source); // read from img tag
-  const matC3 = new cv.Mat(mat.rows, mat.cols, cv.CV_8UC3); // new image matrix
-  cv.cvtColor(mat, matC3, cv.COLOR_RGBA2BGR); // RGBA to BGR
+  const mat = source instanceof cv.Mat ? source : cv.imread(source)
+
+  const matC3 = new cv.Mat(mat.rows, mat.cols, cv.CV_8UC3) // new image matrix
+  cv.cvtColor(mat, matC3, cv.COLOR_RGBA2BGR) // RGBA to BGR
 
   // padding image to [n x n] dim
-  const maxSize = Math.max(matC3.rows, matC3.cols); // get max size from width and height
+  const maxSize = Math.max(matC3.rows, matC3.cols) // get max size from width and height
   const xPad = maxSize - matC3.cols, // set xPadding
-    xRatio = maxSize / matC3.cols; // set xRatio
+    xRatio = maxSize / matC3.cols // set xRatio
   const yPad = maxSize - matC3.rows, // set yPadding
-    yRatio = maxSize / matC3.rows; // set yRatio
-  const matPad = new cv.Mat(); // new mat for padded image
-  cv.copyMakeBorder(matC3, matPad, 0, yPad, 0, xPad, cv.BORDER_CONSTANT); // padding black
+    yRatio = maxSize / matC3.rows // set yRatio
+  const matPad = new cv.Mat() // new mat for padded image
+  cv.copyMakeBorder(matC3, matPad, 0, yPad, 0, xPad, cv.BORDER_CONSTANT) // padding black
 
   const input = cv.blobFromImage(
     matPad,
@@ -92,12 +154,12 @@ const preprocessing = (source, modelWidth, modelHeight) => {
     new cv.Scalar(0, 0, 0),
     true, // swapRB
     false // crop
-  ); // preprocessing image matrix
+  ) // preprocessing image matrix
 
   // release mat opencv
-  mat.delete();
-  matC3.delete();
-  matPad.delete();
+  mat.delete()
+  matC3.delete()
+  matPad.delete()
 
-  return [input, xRatio, yRatio];
-};
+  return [input, xRatio, yRatio]
+}
