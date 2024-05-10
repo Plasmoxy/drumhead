@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "https://plasmoxy.github.io/drumhead/static/css/main.e07bc62f.css",
+    "main.js": "https://plasmoxy.github.io/drumhead/static/js/main.0d6bba3e.js",
+    "model/drumhead_nano.onnx": "https://plasmoxy.github.io/drumhead/model/drumhead_nano.onnx",
+    "static/js/ort-wasm-simd.wasm": "https://plasmoxy.github.io/drumhead/static/js/ort-wasm-simd.wasm",
+    "static/js/ort-wasm-simd-threaded.wasm": "https://plasmoxy.github.io/drumhead/static/js/ort-wasm-simd-threaded.wasm",
+    "static/js/ort-wasm.wasm": "https://plasmoxy.github.io/drumhead/static/js/ort-wasm.wasm",
+    "static/js/ort-wasm-threaded.wasm": "https://plasmoxy.github.io/drumhead/static/js/ort-wasm-threaded.wasm",
+    "service-worker.js": "https://plasmoxy.github.io/drumhead/service-worker.js",
+    "logo512.png": "https://plasmoxy.github.io/drumhead/logo512.png",
+    ".DS_Store": "https://plasmoxy.github.io/drumhead/.DS_Store",
+    "model/.DS_Store": "https://plasmoxy.github.io/drumhead/model/.DS_Store",
+    "logo192.png": "https://plasmoxy.github.io/drumhead/logo192.png",
+    "favicon.ico": "https://plasmoxy.github.io/drumhead/favicon.ico",
+    "model/nms-yolov8.onnx": "https://plasmoxy.github.io/drumhead/model/nms-yolov8.onnx",
+    "index.html": "https://plasmoxy.github.io/drumhead/index.html",
+    "manifest.json": "https://plasmoxy.github.io/drumhead/manifest.json",
+    "robots.txt": "https://plasmoxy.github.io/drumhead/robots.txt",
+    "main.e07bc62f.css.map": "https://plasmoxy.github.io/drumhead/static/css/main.e07bc62f.css.map",
+    "main.0d6bba3e.js.map": "https://plasmoxy.github.io/drumhead/static/js/main.0d6bba3e.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e07bc62f.css",
+    "static/js/main.0d6bba3e.js"
+  ]
+}
