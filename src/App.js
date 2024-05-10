@@ -20,7 +20,7 @@ const App = () => {
   const [processing, setProcessing] = useState(false)
 
   // Configs
-  const modelName = "drumhead_300ep_last.onnx"
+  const modelName = "drumhead_nano.onnx"
   const modelInputShape = [1, 3, 1024, 1024]
   const topk = 1
   const iouThreshold = 0.9
