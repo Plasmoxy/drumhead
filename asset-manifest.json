@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "https://plasmoxy.github.io/drumhead/static/css/main.2d3496a7.css",
+    "main.css": "https://plasmoxy.github.io/drumhead/static/css/main.e0ba72a6.css",
     "main.js": "https://plasmoxy.github.io/drumhead/static/js/main.0d6bba3e.js",
     "model/drumhead_nano.onnx": "https://plasmoxy.github.io/drumhead/model/drumhead_nano.onnx",
     "static/js/ort-wasm-simd.wasm": "https://plasmoxy.github.io/drumhead/static/js/ort-wasm-simd.wasm",
@@ -17,11 +17,11 @@
     "index.html": "https://plasmoxy.github.io/drumhead/index.html",
     "manifest.json": "https://plasmoxy.github.io/drumhead/manifest.json",
     "robots.txt": "https://plasmoxy.github.io/drumhead/robots.txt",
-    "main.2d3496a7.css.map": "https://plasmoxy.github.io/drumhead/static/css/main.2d3496a7.css.map",
+    "main.e0ba72a6.css.map": "https://plasmoxy.github.io/drumhead/static/css/main.e0ba72a6.css.map",
     "main.0d6bba3e.js.map": "https://plasmoxy.github.io/drumhead/static/js/main.0d6bba3e.js.map"
   },
   "entrypoints": [
-    "static/css/main.2d3496a7.css",
+    "static/css/main.e0ba72a6.css",
     "static/js/main.0d6bba3e.js"
   ]
 }
