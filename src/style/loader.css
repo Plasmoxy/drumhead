@@ -1,5 +1,6 @@
 .wrapper {
-  background-color: white;
+  background-color: black;
+  color: white;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -13,7 +14,7 @@
 .wrapper > .spinner {
   width: 40px;
   height: 40px;
-  background-color: #333;
+  background-color: white;
 
   margin: 10px 10px;
   -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;

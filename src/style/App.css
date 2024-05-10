@@ -22,7 +22,7 @@
 .code {
   padding: 5px;
   color: greenyellow;
-  background-color: black;
+  background-color: #222;
   border-radius: 5px;
 }
 
@@ -49,7 +49,7 @@ button {
   text-decoration: none;
   color: white;
   background-color: black;
-  border: 2px solid black;
+  border: 2px solid white;
   margin: 0 5px;
   padding: 5px;
   border-radius: 5px;
@@ -60,5 +60,5 @@ button {
 button:hover {
   color: black;
   background-color: white;
-  border: 2px solid black;
+  border: 2px solid white;
 }

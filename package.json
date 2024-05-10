@@ -1,5 +1,5 @@
 {
-  "name": "yolov8-onnxruntime-web",
+  "name": "drumhead",
   "homepage": "/",
   "version": "0.1.0",
   "dependencies": {
@@ -42,7 +42,7 @@
   "devDependencies": {
     "@craco/craco": "^7.0.0",
     "copy-webpack-plugin": "^11.0.0",
-    "gh-pages": "^4.0.0",
+    "gh-pages": "^6.1.1",
     "workbox-webpack-plugin": "^7.1.0"
   }
 }
