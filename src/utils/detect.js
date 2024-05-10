@@ -2,7 +2,7 @@ import cv from "@techstark/opencv-js"
 import { Tensor } from "onnxruntime-web"
 import { renderBoxes } from "./renderBox"
 
-export async function startCam(videoId = "videoInput", resolution = "vga") {
+export async function startCam(videoId = "videoInput", resolution = "hd") {
   const constraints = {
     qvga: {
       facingMode: "environment",
@@ -21,6 +21,11 @@ export async function startCam(videoId = "videoInput", resolution = "vga") {
       height: {
         exact: 480,
       },
+    },
+    hd: {
+      facingMode: "environment",
+      width: { min: 1280, max: 1560 },
+      height: { min: 720, max: 1440 },
     },
   }
   let video = document.getElementById(videoId)
@@ -75,9 +80,12 @@ export const detectImage = async (
   const [modelWidth, modelHeight] = inputShape.slice(2)
   const [input, xRatio, yRatio] = preprocessing(image, modelWidth, modelHeight)
 
-  console.log(`X ratio: ${xRatio}, Y ratio: ${yRatio}`)
+  console.log(
+    `NMS config: topk=${topk}, iouThreshold=${iouThreshold}, scoreThreshold=${scoreThreshold}`
+  )
 
   const tensor = new Tensor("float32", input.data32F, inputShape) // to ort.Tensor
+
   const config = new Tensor(
     "float32",
     new Float32Array([
@@ -86,6 +94,7 @@ export const detectImage = async (
       scoreThreshold, // score threshold
     ])
   ) // nms config tensor
+
   const { output0 } = await session.net.run({ images: tensor }) // run session and get output layer
   const { selected } = await session.nms.run({
     detection: output0,

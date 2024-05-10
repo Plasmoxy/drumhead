@@ -22,9 +22,9 @@ const App = () => {
   // Configs
   const modelName = "drumhead_300ep_last.onnx"
   const modelInputShape = [1, 3, 1024, 1024]
-  const topk = 100
-  const iouThreshold = 0.45
-  const scoreThreshold = 0.25
+  const topk = 1
+  const iouThreshold = 0.9
+  const scoreThreshold = 0.1
 
   // wait until opencv.js initialized
   cv["onRuntimeInitialized"] = async () => {
@@ -128,22 +128,20 @@ const App = () => {
         }}
       />
 
-      <p>
-        {processing && (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <div className="absspinner">
-              <span style={{ fontSize: "2rem" }}>🥵</span>
-            </div>
-            <b>Processing ...</b>
+      {processing && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div className="absspinner">
+            <span style={{ fontSize: "2rem" }}>🥵</span>
           </div>
-        )}
-      </p>
+          <b>Processing ...</b>
+        </div>
+      )}
 
       <div
         className="btn-container"
