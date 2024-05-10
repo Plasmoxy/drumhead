@@ -202,18 +202,19 @@ const App = () => {
       </div>
 
       <div>
+        <p>
+          Note: on mobile, you might not see preview video, instead: always
+          first click "Start Camera" and then click "Capture" !!!
+        </p>
+      </div>
+
+      <div>
+        {" "}
         <video
           ref={videoRef}
           id="videoInput"
           style={{ maxWidth: 200, maxHeight: 200 }}
         ></video>
-      </div>
-
-      <div>
-        <p>
-          Note: on mobile, you might not see preview video, instead: always
-          first click "Start Camera" and then click "Capture" !!!
-        </p>
       </div>
     </div>
   )
