@@ -2,7 +2,11 @@ import cv from "@techstark/opencv-js"
 import { Tensor } from "onnxruntime-web"
 import { renderBoxes } from "./renderBox"
 
-export async function startCam(videoId = "videoInput", resolution = "hd") {
+export async function startCam(
+  activeRef,
+  videoId = "videoInput",
+  resolution = "hd"
+) {
   const constraints = {
     qvga: {
       facingMode: "environment",
@@ -44,6 +48,8 @@ export async function startCam(videoId = "videoInput", resolution = "hd") {
 
   video.srcObject = stream
   video.play()
+
+  activeRef.current = true
   // self.video = video
   // self.stream = stream
   // self.onCameraStartedCallback = callback
@@ -80,9 +86,9 @@ export const detectImage = async (
   const [modelWidth, modelHeight] = inputShape.slice(2)
   const [input, xRatio, yRatio] = preprocessing(image, modelWidth, modelHeight)
 
-  console.log(
-    `NMS config: topk=${topk}, iouThreshold=${iouThreshold}, scoreThreshold=${scoreThreshold}`
-  )
+  // console.log(
+  //   `NMS config: topk=${topk}, iouThreshold=${iouThreshold}, scoreThreshold=${scoreThreshold}`
+  // )
 
   const tensor = new Tensor("float32", input.data32F, inputShape) // to ort.Tensor
 

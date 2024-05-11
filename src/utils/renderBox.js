@@ -8,7 +8,7 @@ import labels from "./labels.json"
 export const renderBoxes = (canvas, boxes) => {
   const ctx = canvas.getContext("2d")
 
-  console.log(`Canvas size was: ${ctx.canvas.width} x ${ctx.canvas.height}`)
+  // console.log(`Canvas size was: ${ctx.canvas.width} x ${ctx.canvas.height}`)
 
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height) // clean canvas
 

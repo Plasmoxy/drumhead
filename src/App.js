@@ -1,10 +1,11 @@
 import cv from "@techstark/opencv-js"
 import { InferenceSession, Tensor } from "onnxruntime-web"
-import React, { useRef, useState } from "react"
+import React, { useCallback, useRef, useState } from "react"
 import Loader from "./components/loader"
 import "./style/App.css"
 import { detectImage, startCam } from "./utils/detect"
 import { download } from "./utils/download"
+import { isMobile } from "./utils/mobicheck"
 
 const App = () => {
   const [session, setSession] = useState(null)
@@ -17,7 +18,12 @@ const App = () => {
   const imageRef = useRef(null)
   const canvasRef = useRef(null)
   const videoRef = useRef(null)
+
+  const cameraActive = useRef(false)
+  const continuous = useRef(false)
+
   const [processing, setProcessing] = useState(false)
+  const processLock = useRef(false)
 
   // Configs
   const modelName = "drumhead_nano.onnx"
@@ -55,6 +61,49 @@ const App = () => {
     setLoading(null)
   }
 
+  const capture = useCallback(() => {
+    processLock.current = true
+
+    // first start
+    if (!cameraActive.current) {
+      console.log("Starting camera...")
+      startCam(cameraActive)
+      setTimeout(capture, 1000)
+      return
+    }
+
+    // on mobile, trigger cam start again
+    if (isMobile) startCam(cameraActive)
+
+    let source = new cv.Mat(
+      videoRef.current.height,
+      videoRef.current.width,
+      cv.CV_8UC4
+    )
+    let cap = new cv.VideoCapture(videoRef.current)
+    cap.read(source)
+
+    // console.log(`Source shape: ${source.cols}, ${source.rows}`)
+
+    const canv = document.createElement("canvas")
+    cv.imshow(canv, source)
+
+    const dataURL = canv.toDataURL()
+
+    imageRef.current.src = dataURL
+    setImage(dataURL)
+
+    if (continuous.current) {
+      // check lock every 100ms to start next capture
+      const interval = setInterval(() => {
+        if (!processLock.current) {
+          clearInterval(interval)
+          capture()
+        }
+      }, 100)
+    }
+  }, [])
+
   return (
     <div className="App">
       {loading && (
@@ -81,23 +130,21 @@ const App = () => {
           src="#"
           alt=""
           style={{ display: image ? "block" : "none" }}
-          onLoad={() => {
-            console.log("Detecting")
+          onLoad={async () => {
             setProcessing(true)
-            ;(async () => {
-              const out = await detectImage(
-                imageRef.current,
-                canvasRef.current,
-                session,
-                topk,
-                iouThreshold,
-                scoreThreshold,
-                modelInputShape
-              )
-              setProcessing(false)
-              console.log("Done")
-              console.log(out)
-            })()
+            const out = await detectImage(
+              imageRef.current,
+              canvasRef.current,
+              session,
+              topk,
+              iouThreshold,
+              scoreThreshold,
+              modelInputShape
+            )
+            setProcessing(false)
+            processLock.current = false
+            // console.log("Done")
+            // console.log(out)
           }}
         />
         <canvas
@@ -167,37 +214,16 @@ const App = () => {
             Close image
           </button>
         )}
+        <button onClick={capture}>Capture</button>
         <button
           onClick={() => {
-            startCam()
+            continuous.current = !continuous.current
+            if (continuous.current) {
+              capture()
+            }
           }}
         >
-          Start camera
-        </button>
-        <button
-          onClick={async () => {
-            setProcessing(true)
-
-            let source = new cv.Mat(
-              videoRef.current.height,
-              videoRef.current.width,
-              cv.CV_8UC4
-            )
-            let cap = new cv.VideoCapture(videoRef.current)
-            cap.read(source)
-
-            console.log(`Source shape: ${source.cols}, ${source.rows}`)
-
-            const canv = document.createElement("canvas")
-            cv.imshow(canv, source)
-
-            const dataURL = canv.toDataURL()
-
-            imageRef.current.src = dataURL
-            setImage(dataURL)
-          }}
-        >
-          Capture
+          {continuous.current ? "Stop" : "Start"} continuous
         </button>
       </div>
 
