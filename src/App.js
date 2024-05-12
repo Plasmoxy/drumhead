@@ -214,7 +214,7 @@ const App = () => {
             Close image
           </button>
         )}
-        <button onClick={capture}>Capture</button>
+
         <button
           onClick={() => {
             continuous.current = !continuous.current
@@ -225,6 +225,8 @@ const App = () => {
         >
           {continuous.current ? "Stop" : "Start"} continuous
         </button>
+
+        <button onClick={capture}>Camera capture</button>
       </div>
 
       <div>
